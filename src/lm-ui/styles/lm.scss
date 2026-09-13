@@ -1,0 +1,351 @@
+// ============================================================
+// lm-ui-next 主题层
+// 视觉规范还原自 ListMonk 管理界面的设计观感(独立实现的代码)。
+// 组织方式:① 设计令牌 ② 注入 Bulma ③ 组件皮肤
+// ============================================================
+
+// ---------- ① 设计令牌 ----------
+
+$lm-blue: #0055d4;        // 品牌主色
+$lm-green: #36995b;       // 成功
+$lm-orange: #ff5722;      // 危险
+$lm-amber: #ed7b00;       // 警告
+
+$lm-ink: #4a4a4a;         // 正文墨色
+$lm-line: #e6e6e6;        // 常规描边
+$lm-line-soft: #eaeaea;   // 更浅的分隔线
+$lm-hairline: #f3f3f3;    // 硬阴影专用
+$lm-paper: #fafafa;       // 页面底 / 激活底
+
+$lm-card-edge: 1px solid $lm-line;         // 卡片描边
+$lm-hard-shadow: 2px 2px 0 $lm-hairline;   // 硬阴影(无模糊)
+$lm-bar: 5px solid $lm-blue;               // 菜单激活右条
+$lm-font-stack: "Inter", "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+// ---------- ② 注入 Bulma / Buefy ----------
+
+@import "bulma/sass/utilities/_all";
+
+$primary: $lm-blue;
+$green: $lm-green;
+$turquoise: $lm-green;
+$red: $lm-orange;
+$link: $lm-blue;
+
+$body-family: $lm-font-stack;
+$body-size: 15px;
+$background: $lm-paper;
+$body-background-color: $lm-paper;
+$input-placeholder-color: $grey-light;
+$grey-lightest: $lm-line-soft;
+
+$colors: map-merge($colors, (
+  "turquoise": ($lm-green, $green-invert),
+  "green": ($lm-green, $green-invert),
+  "success": ($lm-green, $green-invert),
+  "danger": ($lm-orange, $green-invert),
+));
+
+$menu-item-active-background-color: $lm-paper;
+$menu-item-active-color: $lm-blue;
+$sidebar-box-shadow: none;
+$sidebar-background-color: transparent;
+$modal-background-background-color: rgba(0, 0, 0, 0.3);
+
+@import "bulma/bulma";
+@import "@ntohq/buefy-next/src/scss/buefy";
+
+// ---------- ③ 组件皮肤 ----------
+
+// 3.1 布局骨架:顶部导航 + (侧边栏 | 主区)
+#app {
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+    // 导航条自身占 3.25rem;若直接写 100vh,页面会多出一段滚动
+    min-height: calc(100vh - 3.25rem);
+  }
+
+  .sidebar {
+    background: #fff;
+    box-shadow: 0 0 3px $grey-lighter;
+    flex: none;
+    inline-size: 240px;
+    max-inline-size: 240px;
+  }
+
+  .main {
+    background: #fff;
+    flex-grow: 1;
+    margin-inline-start: 15px;
+    padding: 30px;
+    position: relative;
+  }
+}
+
+.navbar {
+  box-shadow: 0 0 3px $grey-lighter;
+  padding-inline-start: 25px;
+}
+
+// 3.2 侧边栏菜单
+//
+// 激活语义(与 ListMonk 管理界面一致):
+//   · 顶级路由项命中时      —— 蓝字 + 米白底 + 右侧蓝条
+//   · 折叠组内有子路由命中  —— 蓝字 + 米白底,无蓝条
+//   · 二级子路由命中时      —— 蓝字 + 米白底 + 右侧蓝条
+//   · 其余项                —— 墨色文字,悬停浅灰
+.b-sidebar {
+  position: sticky;
+  inset-block-start: 75px;
+  // buefy-next 默认 display:flex,会把 sidebar-content 按内容撑宽,
+  // 溢出 240px 侧边栏、盖住边框线 —— 改回块级并锁宽
+  display: block;
+
+  .sidebar-content {
+    background: transparent;
+    box-shadow: none; // Buefy 默认投影在静态布局下会漏出灰边
+    inline-size: 100%;
+    max-inline-size: 100%;
+  }
+
+  .menu-list a {
+    border-radius: 0;
+    color: $lm-ink;
+    padding: 7.5px 11.25px 7.5px 25px;
+
+    &:hover { color: $lm-blue; }
+    .icon { margin-inline-end: 8px; }
+  }
+
+  // 二级子列表:左侧竖线定位层级
+  .menu-list li ul {
+    border-left: 1px solid $grey-lighter;
+    margin-inline-end: 0;
+  }
+
+  // 折叠组父项:仅在有子路由命中时由组件传入 active
+  .menu-list > li > a.is-active {
+    background: $lm-paper;
+    color: $lm-blue;
+  }
+
+  // 路由命中(顶级或二级):右蓝条
+  .menu-list a.router-link-exact-active {
+    background: $lm-paper;
+    border-right: $lm-bar;
+    color: $lm-blue;
+    outline: 0 none;
+  }
+}
+
+// 3.3 卡片 / 硬阴影
+.box {
+  background: #fff;
+  border: $lm-card-edge;
+  box-shadow: $lm-hard-shadow;
+}
+
+// 3.4 通知:白底灰字 + 左侧色条
+.notification {
+  border-left: 10px solid #eee;
+  padding: 10px 15px;
+
+  &.is-info {
+    background: $white-ter;
+    border-left-color: $lm-blue;
+    color: $grey-dark;
+  }
+  &.is-success {
+    background: $white-ter;
+    border-left-color: $lm-green;
+    color: $black;
+  }
+  &.is-danger {
+    background: $white-ter;
+    border-left-color: $lm-orange;
+    color: $black;
+  }
+}
+
+// 3.5 表格
+.main table {
+  thead th {
+    background: $lm-paper;
+    border-bottom: 1px solid $grey-lighter;
+  }
+
+  thead th,
+  tbody td {
+    border-color: $lm-line-soft;
+    padding: 15px 10px;
+  }
+
+  .actions a {
+    display: inline-block;
+    margin: 0 10px;
+  }
+}
+
+// 3.6 弹窗
+.modal { z-index: 950; }
+
+.modal-background { background: rgba(241, 241, 241, 0.7); }
+
+.modal-content,
+.modal.dialog .modal-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ddd;
+}
+
+.modal-card-head {
+  border-bottom: 0;
+  display: block;
+}
+
+.modal-card-body { padding: 30px 20px; }
+
+.modal .modal-card-foot {
+  background: none;
+  border-top: 0;
+  justify-content: flex-end;
+
+  button {
+    flex-grow: 1;
+
+    &.is-primary { font-weight: bold; }
+  }
+}
+
+// 3.7 按钮
+.button {
+  &:not(.is-small) {
+    block-size: auto;
+    padding: 10px 20px;
+  }
+
+  &.is-primary {
+    background: $lm-blue;
+
+    &:hover,
+    &:active { background: darken($lm-blue, 15%); }
+
+    &:disabled { background: $grey-light; }
+
+    &:focus:not(:active) { box-shadow: 0 0 0 0.2em rgba($lm-blue, 0.25); }
+  }
+
+  &.is-light.is-outlined {
+    background: lighten($lm-blue, 55%);
+    color: $lm-blue;
+  }
+}
+
+// 3.8 输入控件
+.input,
+.textarea,
+.taginput .taginput-container.is-focusable {
+  background: #fff;
+  border: 1px solid $grey-lighter;
+  box-shadow: $lm-hard-shadow;
+}
+
+.input,
+.select select {
+  block-size: auto;
+  padding: 10px 12px;
+}
+
+.field {
+  &:not(:last-child) { margin-bottom: 2rem; }
+
+  label { color: $grey-dark; }
+  .help { color: $grey; }
+
+  // 浮动 label:白底压在控件边框上
+  &.is-floating-label label.label {
+    background: #fff;
+    font-size: 0.875rem;
+  }
+}
+
+// 3.9 Tabs:内容区三面描边 + 硬阴影
+.b-tabs .tab-content {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  border-width: 0 1px 1px;
+  box-shadow: $lm-hard-shadow;
+  padding: 30px 20px;
+}
+
+// 3.10 状态胶囊:浅底色 + 深字
+.tag {
+  border: 0;
+  border-radius: 30px !important;
+  padding: 0 20px !important;
+
+  &.is-small {
+    background: $white-ter;
+    font-size: 0.65rem;
+    min-width: auto !important;
+    padding: 3px 5px !important;
+  }
+
+  &:not(body) {
+    background: #eee;
+    color: $grey;
+    font-size: 0.85em;
+  }
+
+  &.public, &.running, &.info, &.primary {
+    background: #e6f7ff;
+    color: lighten($lm-blue, 20%);
+  }
+  &.finished, &.enabled, &.success {
+    background: #dcfce7;
+    color: $lm-green;
+  }
+  &.private, &.scheduled, &.paused, &.warning {
+    background: lighten($lm-amber, 47%);
+    color: $lm-amber;
+  }
+  &.blocklisted, &.danger {
+    background: #fff1f0;
+    color: $lm-orange;
+  }
+}
+
+// 3.11 页头
+.page-header .buttons { justify-content: flex-end; }
+
+// 3.12 轻提示:白底 + 左侧粗色条
+.notices .toast {
+  background: #fff;
+  border-left: 15px solid $grey;
+  border-radius: 3px;
+  box-shadow: $lm-hard-shadow;
+  color: $grey-dark;
+  padding: 20px;
+
+  &.is-success { border-left-color: $lm-green; }
+  &.is-danger { border-left-color: $lm-orange; }
+}
+
+// 3.13 Buefy 内部用默认青绿色编译工具类与控件,统一回写主色
+.has-text-primary { color: $lm-blue !important; }
+.has-background-primary { background-color: $lm-blue !important; }
+
+.progress.is-primary {
+  &::-webkit-progress-value { background: $lm-blue; }
+  &::-moz-progress-bar { background: $lm-blue; }
+  &::-ms-fill { background: $lm-blue; }
+}
+
+.switch input:checked + .check,
+.switch input[type="checkbox"]:checked + .check,
+.switch input[type="checkbox"]:checked + .check.is-primary {
+  background: $lm-blue;
+  border-color: $lm-blue;
+}
