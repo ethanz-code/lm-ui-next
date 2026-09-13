@@ -20,9 +20,9 @@ withDefaults(
     <div class="level is-mobile" style="width: 100%">
       <div class="level-left">
         <div>
-          <p>
+          <p class="count-row">
             <b-icon :icon="icon" size="is-medium" />
-            <span class="big-count ml-2">{{ count }}</span>
+            <span class="big-count">{{ count }}</span>
           </p>
           <p class="has-text-grey mt-2">{{ label }}</p>
         </div>
@@ -48,10 +48,17 @@ withDefaults(
   display: flex;
   align-items: center;
 
+  // 图标与大数字垂直居中对齐,消除基线偏差
+  .count-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .big-count {
     font-size: 2rem;
     font-weight: 700;
-    vertical-align: middle;
+    line-height: 1.2;
   }
 
   .fields {
