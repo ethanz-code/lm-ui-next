@@ -9,6 +9,7 @@ const menu: LmMenuGroup[] = [
         label: '案例',
         icon: 'shape-plus-outline',
         children: [
+          { label: '组件总览', icon: 'shape-plus-outline', to: '/components' },
           { label: '列表管理', icon: 'format-list-bulleted-square', to: '/lists' },
           { label: '表单', icon: 'form-select', to: '/form' },
           { label: '反馈', icon: 'message-alert-outline', to: '/feedback' },

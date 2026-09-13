@@ -349,3 +349,8 @@ $modal-background-background-color: rgba(0, 0, 0, 0.3);
   background: $lm-blue;
   border-color: $lm-blue;
 }
+
+.b-slider .b-slider-fill,
+.b-slider.is-primary .b-slider-fill {
+  background: $lm-blue !important;
+}
