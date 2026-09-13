@@ -87,6 +87,7 @@ Peer requirements: `vue ^3`, `bulma ^0.9`, `@ntohq/buefy-next`, `@mdi/font`.
 | Route | Demonstrates |
 | --- | --- |
 | `/` | Stat tiles, recent-activity table, status tags |
+| `/components` | **Full component gallery** — every library component and themed Buefy widget |
 | `/lists` | Search, bulk select, edit modal, delete confirm, dual pagination |
 | `/form` | Inputs, select, tag input, switch, checkbox |
 | `/feedback` | Color-bar notifications, toasts, confirm dialog, tabs, progress |
